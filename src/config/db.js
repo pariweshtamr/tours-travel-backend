@@ -8,6 +8,7 @@ const mongoClient = () => {
   }
 
   try {
+    mongoose.set("strictQuery", false)
     const connectionString = mongoose.connect(process.env.MONGO_URL)
     if (connectionString) {
       return console.log("MongoDB Connected")

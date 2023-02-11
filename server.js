@@ -3,7 +3,7 @@ dotenv.config()
 import express from "express"
 const app = express()
 import cors from "cors"
-import mongoClient from "./src/config/db"
+import mongoClient from "./src/config/db.js"
 
 const PORT = process.env.PORT || 8000
 
