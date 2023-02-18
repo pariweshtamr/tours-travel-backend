@@ -20,14 +20,16 @@ app.use(cookieParser())
 
 import authRouter from "./src/routers/authRouter.js"
 import userRouter from "./src/routers/userRouter.js"
-import tourRouter from "./src/routers/toursRouter.js"
-import reviewRouter from "./src/routers/reviewsRouter.js"
+import tourRouter from "./src/routers/tourRouter.js"
+import reviewRouter from "./src/routers/reviewRouter.js"
+import bookingRouter from "./src/routers/bookingRouter.js"
 
 // use routers
 app.use("/api/v1/auth", authRouter)
-app.use("/api/v1/users", userRouter)
-app.use("/api/v1/tours", tourRouter)
-app.use("/api/v1/reviews", reviewRouter)
+app.use("/api/v1/user", userRouter)
+app.use("/api/v1/tour", tourRouter)
+app.use("/api/v1/review", reviewRouter)
+app.use("/api/v1/booking", bookingRouter)
 
 // Global error handler
 app.use((error, req, res, next) => {

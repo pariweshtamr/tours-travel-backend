@@ -16,9 +16,10 @@ const router = express.Router()
 router.get("/", async (req, res, next) => {
   // for pagination
   const page = parseInt(req.query.page)
-  console.log(page)
+
   try {
     const tours = await getAllTours()
+      .populate("reviews") // populate return all the data related to the id that is in the property (reviews)
       .skip(page * 8)
       .limit(8)
     res.status(200).json({ count: tours.length, data: tours })
@@ -30,9 +31,8 @@ router.get("/", async (req, res, next) => {
 // get single tour
 router.get("/:_id", async (req, res, next) => {
   const { _id } = req.params
-  console.log(_id)
   try {
-    const tour = await getATour(_id)
+    const tour = await getATour(_id).populate("reviews")
 
     tour._id
       ? res.status(200).json({
@@ -60,7 +60,7 @@ router.get("/search/getToursBySearch", async (req, res, next) => {
       city,
       distance: { $gte: distance },
       maxGroupSize: { $gte: maxGroupSize },
-    })
+    }).populate("reviews")
     res.status(200).json({
       status: "success",
       tours,
@@ -73,7 +73,9 @@ router.get("/search/getToursBySearch", async (req, res, next) => {
 // get featured tour
 router.get("/search/featuredTour", async (req, res, next) => {
   try {
-    const tours = await getToursByFilter({ featured: true }).limit(8)
+    const tours = await getToursByFilter({ featured: true })
+      .populate("reviews")
+      .limit(8)
 
     res.status(200).json({
       status: "success",
