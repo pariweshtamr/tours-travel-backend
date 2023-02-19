@@ -22,7 +22,7 @@ router.get("/", async (req, res, next) => {
       .populate("reviews") // populate return all the data related to the id that is in the property (reviews)
       .skip(page * 8)
       .limit(8)
-    res.status(200).json({ count: tours.length, data: tours })
+    res.status(200).json({ count: tours.length, status: "success", tours })
   } catch (error) {
     next(error)
   }
@@ -50,6 +50,7 @@ router.get("/:_id", async (req, res, next) => {
 
 // get tours by search
 router.get("/search/getToursBySearch", async (req, res, next) => {
+  console.log(req.query)
   const city = new RegExp(req.query.city, "i")
   const distance = parseInt(req.query.distance)
   const maxGroupSize = parseInt(req.query.maxGroupSize)
@@ -94,7 +95,7 @@ router.get("/search/tourCount", async (req, res, next) => {
 
     res.status(200).json({
       status: "success",
-      data: tourCount,
+      tourCount,
     })
   } catch (error) {
     next(error)

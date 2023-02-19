@@ -12,7 +12,11 @@ const bookingSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    fullName: {
+    fName: {
+      type: String,
+      required: true,
+    },
+    lName: {
       type: String,
       required: true,
     },

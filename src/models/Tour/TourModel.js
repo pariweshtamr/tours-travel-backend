@@ -5,7 +5,7 @@ export const createTour = (obj) => {
 }
 
 export const updateTour = (filter, obj) => {
-  return TourSchema.findOneAndUpdate(filter, obj, { new: true })
+  return TourSchema.findByIdAndUpdate(filter, obj, { new: true })
 }
 
 export const deleteTour = (_id) => {

@@ -9,9 +9,9 @@ export const signJWT = async (payload) => {
 }
 
 export const verifyToken = async (req, res, next) => {
-  const token = req.cookies.accessToken
+  const { authorization } = req.headers
 
-  if (!token) {
+  if (!authorization) {
     return res
       .status(401)
       .json({ status: "error", message: "You're not authorized" })
@@ -19,10 +19,11 @@ export const verifyToken = async (req, res, next) => {
 
   // if token exists then verify the token
 
-  jwt.verify(token, process.env.JWT_SECRET_KEY, (error, user) => {
+  jwt.verify(authorization, process.env.JWT_SECRET_KEY, (error, user) => {
     if (error) {
       return res.status(401).json({ status: "error", message: "Inavlid token" })
     }
+
     req.user = user
     next()
   })
