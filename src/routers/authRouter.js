@@ -55,7 +55,7 @@ router.post("/login", async (req, res, next) => {
 
         // set token in browser cookies and send response to the client
         return res
-          .cookie("accessToken", token, {
+          .cookie("act", token, {
             httpOnly: true,
             expires: token.expiresIn,
           })
