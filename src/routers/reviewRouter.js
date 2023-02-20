@@ -1,5 +1,5 @@
 import express from "express"
-import { verifyUser } from "../helpers/jwtHelper.js"
+import { verifyUser } from "../middlewares/authMiddleware.js"
 import { createReview } from "../models/Review/ReviewModel.js"
 import { updateTour } from "../models/Tour/TourModel.js"
 

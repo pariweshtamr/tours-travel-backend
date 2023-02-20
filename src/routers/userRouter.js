@@ -1,10 +1,8 @@
 import express from "express"
-import { verifyAdmin, verifyUser } from "../helpers/jwtHelper.js"
+import { verifyAdmin, verifyUser } from "../middlewares/authMiddleware.js"
 import {
-  createUser,
   deleteUser,
   getAllUsers,
-  getUserByFilter,
   getUserById,
   updateUser,
 } from "../models/User/UserModel.js"

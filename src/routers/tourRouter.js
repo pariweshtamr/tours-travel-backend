@@ -1,5 +1,5 @@
 import express from "express"
-import { verifyAdmin } from "../helpers/jwtHelper.js"
+import { verifyAdmin } from "../middlewares/authMiddleware.js"
 import {
   createTour,
   deleteTour,
