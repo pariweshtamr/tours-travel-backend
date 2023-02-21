@@ -9,7 +9,7 @@ import cookieParser from "cookie-parser"
 const PORT = process.env.PORT || 8000
 
 const corsOptions = {
-  origin: true,
+  origin: process.env.CLIENT_URL,
   credentials: true,
   exposedHeaders: ["Authorization"],
 }
@@ -19,8 +19,8 @@ mongoClient()
 
 // Middlewares
 app.use(express.json())
-app.use(cookieParser())
 app.use(cors(corsOptions))
+app.use(cookieParser())
 
 // import routers
 

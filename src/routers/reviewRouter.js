@@ -8,7 +8,7 @@ const router = express.Router()
 // create review
 router.post("/:_id", verifyUser, async (req, res, next) => {
   const { _id } = req.params
-
+  console.log(req.body)
   try {
     const review = await createReview(req.body)
 

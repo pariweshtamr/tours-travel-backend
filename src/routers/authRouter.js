@@ -1,12 +1,13 @@
 import express from "express"
 import { comparePassword, hashPassword } from "../helpers/bcryptHelper.js"
 import { signJWT } from "../helpers/jwtHelper.js"
+import { newUserValidation } from "../middlewares/joiValidation/formValidations.js"
 import { createUser, getUserByFilter } from "../models/User/UserModel.js"
 
 const router = express.Router()
 
 // register user
-router.post("/register", async (req, res, next) => {
+router.post("/register", newUserValidation, async (req, res, next) => {
   const { email, password } = req.body
   try {
     const user = await getUserByFilter({ email })
@@ -52,12 +53,11 @@ router.post("/login", async (req, res, next) => {
         user.__v = undefined
 
         const token = await signJWT({ _id: user._id, role: user.role })
-
         // set token in browser cookies and send response to the client
         return res
-          .cookie("act", token, {
+          .cookie("acccesToken", token, {
             httpOnly: true,
-            expires: token.expiresIn,
+            maxAge: 24 * 60 * 60 * 1000,
           })
           .status(200)
           .json({
