@@ -1,6 +1,6 @@
 import express from "express"
 import { comparePassword, hashPassword } from "../helpers/bcryptHelper.js"
-import { signJWT } from "../helpers/jwtHelper.js"
+import { createJwts } from "../helpers/jwtHelper.js"
 import { newUserValidation } from "../middlewares/joiValidation/formValidations.js"
 import { createUser, getUserByFilter } from "../models/User/UserModel.js"
 
@@ -51,18 +51,19 @@ router.post("/login", async (req, res, next) => {
       if (isPassMatched) {
         user.password = undefined
         user.__v = undefined
+        user.refreshJwt = undefined
 
-        const token = await signJWT({ _id: user._id, role: user.role })
+        const tokens = await createJwts({ _id: user._id, role: user.role })
         // set token in browser cookies and send response to the client
         return res
-          .cookie("acccesToken", token, {
+          .cookie("acccesToken", tokens.accessJwt, {
             httpOnly: true,
           })
           .status(200)
           .json({
             status: "success",
             message: "Login Successful",
-            token,
+            tokens,
             user,
           })
       }

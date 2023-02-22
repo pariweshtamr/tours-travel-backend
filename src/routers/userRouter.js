@@ -6,6 +6,7 @@ import {
   getUserById,
   updateUser,
 } from "../models/User/UserModel.js"
+import { hashPassword } from "../helpers/bcryptHelper.js"
 
 const router = express.Router()
 
@@ -44,23 +45,43 @@ router.get("/:_id", verifyUser, async (req, res, next) => {
   }
 })
 
-// update user
-router.put("/:_id", verifyUser, async (req, res, next) => {
-  const { _id } = req.params
+// update user password
+router.patch("/update-password", verifyUser, async (req, res, next) => {
+  const userId = req.user._id
+  console.log(userId)
+  const { currentPassword, password } = req.body
+
   try {
-    const user = await updateUser(_id, {
-      $set: req.body,
-    })
-    user._id
-      ? res.status(200).json({
-          status: "success",
-          message: "User information updated successfully",
-          tour,
+    const user = await getUserById(userId)
+
+    if (!user._id) {
+      res.json({
+        status: "error",
+        message: "User not found!",
+      })
+      return
+    }
+
+    const isPassMatched = comparePassword(currentPassword, user.password)
+
+    if (isPassMatched) {
+      const hashedPass = hashPassword(password)
+
+      const updatedUser = await updateUser(user._id, { password: hashedPass })
+
+      if (updatedUser._id) {
+        res.json({
+          status: "error ",
+          message: "Password updated successfully!",
         })
-      : res.status(500).json({
-          status: "error",
-          message: "Failed to update User information",
-        })
+        return
+      }
+      res.json({
+        status: "error",
+        message:
+          "Error!, Unable to update the password, please try again later.",
+      })
+    }
   } catch (error) {
     next(error)
   }

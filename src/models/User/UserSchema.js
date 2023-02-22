@@ -33,6 +33,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "user",
     },
+    refreshJwt: {
+      type: String,
+      default: "",
+    },
   },
   {
     timestamps: true,
