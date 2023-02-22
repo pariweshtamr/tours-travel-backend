@@ -14,7 +14,7 @@ export const verifyToken = async (req, res, next) => {
   if (!authorization) {
     return res
       .status(401)
-      .json({ status: "error", message: "You're not authorized" })
+      .json({ status: "error", message: "Authentication failed!" })
   }
 
   // if token exists then verify the token

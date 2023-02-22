@@ -11,7 +11,6 @@ const PORT = process.env.PORT || 8000
 const corsOptions = {
   origin: process.env.CLIENT_URL,
   credentials: true,
-  exposedHeaders: ["Authorization"],
 }
 
 // Connect DB
