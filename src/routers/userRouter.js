@@ -48,7 +48,6 @@ router.get("/:_id", verifyUser, async (req, res, next) => {
 // update user password
 router.patch("/update-password", verifyUser, async (req, res, next) => {
   const userId = req.user._id
-  console.log(userId)
   const { currentPassword, password } = req.body
 
   try {
