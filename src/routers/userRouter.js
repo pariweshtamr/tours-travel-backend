@@ -6,7 +6,7 @@ import {
   getUserById,
   updateUser,
 } from "../models/User/UserModel.js"
-import { hashPassword } from "../helpers/bcryptHelper.js"
+import { hashPassword, comparePassword } from "../helpers/bcryptHelper.js"
 
 const router = express.Router()
 
@@ -61,7 +61,7 @@ router.patch("/update-password", verifyUser, async (req, res, next) => {
       return
     }
 
-    const isPassMatched = comparePassword(currentPassword, user.password)
+    const isPassMatched = comparePassword(currentPassword, user?.password)
 
     if (isPassMatched) {
       const hashedPass = hashPassword(password)
@@ -70,7 +70,7 @@ router.patch("/update-password", verifyUser, async (req, res, next) => {
 
       if (updatedUser._id) {
         res.json({
-          status: "error ",
+          status: "success",
           message: "Password updated successfully!",
         })
         return

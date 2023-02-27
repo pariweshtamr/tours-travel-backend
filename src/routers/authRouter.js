@@ -18,11 +18,44 @@ const router = express.Router()
 // get user
 router.get("/", verifyUser, (req, res, next) => {
   try {
-    const user = req.user.select("-refreshJwt")
+    const user = req.user
 
     res.json({
       status: "success",
       user,
+    })
+  } catch (error) {
+    next(error)
+  }
+})
+
+// return new accessJwt
+router.get("/accessJwt", async (req, res, next) => {
+  try {
+    const refreshJwt = req.headers.authorization
+    const decoded = verifyRefreshJwt(refreshJwt)
+
+    if (!decoded?._id) return
+
+    // check if refreshJwt exists in db
+    const user = await getUserById({ _id: decoded._id })
+
+    // if refreshJwt is valid, create new accessJwt and send to client
+    if (user?._id) {
+      const accessJwt = await signAccessJwt({
+        _id: decoded._id,
+        role: decoded.role,
+      })
+
+      return res.json({
+        status: "success",
+        accessJwt,
+      })
+    }
+
+    res.status(401).json({
+      status: "error",
+      message: "Invalid refreshJwt.",
     })
   } catch (error) {
     next(error)
@@ -97,38 +130,6 @@ router.post("/login", async (req, res, next) => {
       status: "error",
       message: "Invalid login details!",
     })
-  } catch (error) {
-    next(error)
-  }
-})
-
-// return new accessJwt
-router.get("/accessJwt", async (req, res, next) => {
-  try {
-    const refreshJwt = req.headers.authorization
-    const decoded = verifyRefreshJwt(refreshJwt)
-
-    if (decoded?._id) {
-      // check if refreshJwt exists in db
-      const user = await getUserById({ _id: decoded._id })
-
-      // if refreshJwt is valid, create new accessJwt and send to client
-      if (user?._id) {
-        const accessJwt = await signAccessJwt({
-          _id: decoded._id,
-          role: decoded.role,
-        })
-
-        res.json({
-          status: "success",
-          accessJwt,
-        })
-      }
-      res.status(401).json({
-        status: "error",
-        message: "Invalid refreshJwt.",
-      })
-    }
   } catch (error) {
     next(error)
   }

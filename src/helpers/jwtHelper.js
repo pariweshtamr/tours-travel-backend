@@ -3,7 +3,7 @@ import { updateUser } from "../models/User/UserModel.js"
 
 export const signAccessJwt = async (payload) => {
   const accessJwt = jwt.sign(payload, process.env.JWT_ACCESS_KEY, {
-    expiresIn: "1min",
+    expiresIn: "1d",
   })
 
   return accessJwt

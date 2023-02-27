@@ -23,7 +23,7 @@ export const verifyUser = async (req, res, next) => {
     }
     res.status(401).json({
       status: "error",
-      message: "Unauthorized! jwt expired",
+      message: "Unauthorized!",
     })
   } catch (error) {
     next(error)
