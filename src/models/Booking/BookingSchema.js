@@ -5,31 +5,46 @@ const bookingSchema = new mongoose.Schema(
     userId: {
       type: String,
     },
+    customerId: {
+      type: String,
+    },
+    paymentIntentId: { type: String },
     userEmail: {
       type: String,
     },
-    tourName: {
+    tour: {
+      type: Object,
+      tourId: { type: String, required: true },
+      tourName: {
+        type: String,
+        required: true,
+      },
+      tourPrice: {
+        type: String,
+        required: true,
+      },
+      guestSize: {
+        type: Number,
+        required: true,
+      },
+      bookAt: {
+        type: Date,
+        required: true,
+      },
+    },
+
+    name: {
       type: String,
       required: true,
     },
-    fName: {
-      type: String,
-      required: true,
-    },
-    lName: {
-      type: String,
-      required: true,
-    },
-    guestSize: {
-      type: Number,
-      required: true,
-    },
+
     phone: {
       type: Number,
       required: true,
     },
-    bookAt: {
-      type: Date,
+
+    paymentStatus: {
+      type: String,
       required: true,
     },
   },

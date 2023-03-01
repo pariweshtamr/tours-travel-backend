@@ -1,17 +1,30 @@
 import express from "express"
 import Stripe from "stripe"
-import { buffer } from "micro"
+import { createBooking } from "../models/Booking/BookingModel.js"
 
 const router = express.Router()
 
 router.post("/create-checkout-session", async (req, res, next) => {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
-  const { tourPrice, guestSize, tourName, userEmail, userId } = req.body
+  const {
+    tourPrice,
+    tourId,
+    guestSize,
+    tourName,
+    userId,
+    phone,
+    bookAt,
+    serviceFee,
+  } = req.body
+
+  const price = tourPrice + serviceFee
+  const totalPrice = tourPrice * guestSize + serviceFee
 
   const customer = await stripe.customers.create({
     metadata: {
       userId,
-      tour: JSON.stringify({ tourName, tourPrice, guestSize }),
+      phone,
+      tour: JSON.stringify({ tourName, totalPrice, tourId, guestSize, bookAt }),
     },
   })
   try {
@@ -23,7 +36,7 @@ router.post("/create-checkout-session", async (req, res, next) => {
             product_data: {
               name: tourName,
             },
-            unit_amount: tourPrice * 100,
+            unit_amount: price * 100,
           },
           quantity: guestSize,
         },
@@ -31,7 +44,7 @@ router.post("/create-checkout-session", async (req, res, next) => {
       customer: customer.id,
       mode: "payment",
       success_url: `${process.env.CLIENT_URL}/thank-you`,
-      cancel_url: `${process.env.CLIENT_URL}`,
+      cancel_url: `${process.env.CLIENT_URL}/tours/${tourId}`,
     })
     res.json({ url: session.url })
   } catch (error) {
@@ -39,8 +52,27 @@ router.post("/create-checkout-session", async (req, res, next) => {
   }
 })
 
-const fulfillOrder = (lineItems) => {
-  console.log("Fulfilling order", lineItems)
+//  create booking
+
+const createOrder = async (customer, data) => {
+  const tour = JSON.parse(customer.metadata.tour)
+
+  try {
+    const newBooking = await createBooking({
+      userId: customer.metadata.userId,
+      customerId: data.customer,
+      paymentIntentId: data.payment_intent,
+      userEmail: customer.email,
+      name: data.customer_details.name,
+      phone: customer.metadata.phone,
+      tour,
+      paymentStatus: data.payment_status,
+    })
+
+    // email
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 let endpointSecret =
@@ -55,10 +87,10 @@ router.post(
     const sig = req.headers["stripe-signature"]
 
     let event
+    // this step is important to ensure the event is coming from stripe and not from any third party
     try {
       event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret)
     } catch (error) {
-      console.log(error.message)
       res.status(400).json(`Webhook Error: ${error.message}`)
     }
 
@@ -66,49 +98,15 @@ router.post(
 
     // // Handle the checkout.session.completed event
     if (event.type === "checkout.session.completed") {
-      stripe.customers
-        .retrieve(data.customer)
-        .then((customer) => {
-          console.log(customer)
-          console.log("data:", data)
-        })
-        .catch((err) => console.log(err.message))
+      try {
+        const customer = await stripe.customers.retrieve(data.customer)
+        customer && createOrder(customer, data)
+      } catch (error) {
+        console.log(error.message)
+      }
     }
     res.status(200).end()
   }
 )
-
-// router.post("/create", async (req, res) => {
-//   const secret = process.env.STRIPE_SECRET_KEY
-//   const stripe = new Stripe(secret)
-//   const {
-//     fName,
-//     lName,
-//     phone,
-//     tourName,
-//     guestSize,
-//     userEmail,
-//     tourPrice,
-//     userId,
-//   } = req.body
-
-//   try {
-//     const paymentIntent = await stripe.paymentIntents.create({
-//       amount: tourPrice * guestSize * 100,
-//       currency: "aud",
-//       automatic_payment_methods: {
-//         enabled: true,
-//       },
-//     })
-
-//     console.log(paymentIntent)
-//     res.status(200).json({ clientSecret: paymentIntent.client_secret })
-//   } catch (error) {
-//     res.status(500).json({
-//       status: "error",
-//       message: error.message,
-//     })
-//   }
-// })
 
 export default router
