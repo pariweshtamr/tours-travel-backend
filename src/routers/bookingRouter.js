@@ -5,6 +5,7 @@ import {
   getAllBookings,
   getBookingById,
 } from "../models/Booking/BookingModel.js"
+import Stripe from "stripe"
 
 const router = express.Router()
 
@@ -36,8 +37,17 @@ router.get("/:_id", verifyUser, async (req, res, next) => {
 // create booking
 router.post("/", verifyUser, async (req, res, next) => {
   try {
-    const booking = await createBooking(req.body)
-    console.log(booking)
+    const booking = await createBooking({
+      fName,
+      lName,
+      phone,
+      tourName,
+      guestSize,
+      userEmail,
+      userId,
+      bookAt,
+    })
+
     booking?._id
       ? res
           .status(200)

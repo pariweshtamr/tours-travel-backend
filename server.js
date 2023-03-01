@@ -8,15 +8,11 @@ import cookieParser from "cookie-parser"
 
 const PORT = process.env.PORT || 8000
 
-const corsOptions = {
-  origin: process.env.CLIENT_URL,
-  credentials: true,
-}
-
 // Connect DB
 mongoClient()
 
 // Middlewares
+app.use("/api/v1/payment/webhook", express.raw({ type: "*/*" }))
 app.use(express.json())
 app.use(cors())
 app.use(cookieParser())
@@ -28,6 +24,7 @@ import userRouter from "./src/routers/userRouter.js"
 import tourRouter from "./src/routers/tourRouter.js"
 import reviewRouter from "./src/routers/reviewRouter.js"
 import bookingRouter from "./src/routers/bookingRouter.js"
+import paymentRouter from "./src/routers/paymentRouter.js"
 
 // use routers
 app.use("/api/v1/auth", authRouter)
@@ -35,6 +32,7 @@ app.use("/api/v1/user", userRouter)
 app.use("/api/v1/tour", tourRouter)
 app.use("/api/v1/review", reviewRouter)
 app.use("/api/v1/booking", bookingRouter)
+app.use("/api/v1/payment", paymentRouter)
 
 // Global error handler
 app.use((error, req, res, next) => {
