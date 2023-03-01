@@ -75,9 +75,7 @@ const createOrder = async (customer, data) => {
   }
 }
 
-let endpointSecret =
-  "whsec_736240ac8fb2f5cb2d4bc8135ce9639010265ca3af1f5c1805c15b07da32b7eb"
-
+let endpointSecret = process.env.STRIPE_WEBHOOK_SECRET
 router.post(
   "/webhook",
   express.raw({ type: "application/json" }),
