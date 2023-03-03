@@ -18,7 +18,6 @@ router.post("/create-checkout-session", async (req, res, next) => {
   } = req.body
 
   const totalPrice = tourPrice * guestSize
-  const priceIncServiceCharge = totalPrice + 10
 
   const customer = await stripe.customers.create({
     metadata: {
@@ -26,7 +25,7 @@ router.post("/create-checkout-session", async (req, res, next) => {
       phone,
       tour: JSON.stringify({
         tourName,
-        priceIncServiceCharge,
+        totalPrice,
         tourId,
         guestSize,
         bookAt,
