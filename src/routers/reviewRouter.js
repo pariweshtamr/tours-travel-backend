@@ -1,6 +1,6 @@
 import express from "express"
 import { verifyUser } from "../middlewares/authMiddleware.js"
-import { createReview } from "../models/Review/ReviewModel.js"
+import { createReview, deleteReview } from "../models/Review/ReviewModel.js"
 import { updateTour } from "../models/Tour/TourModel.js"
 
 const router = express.Router()
@@ -27,6 +27,27 @@ router.post("/:_id", verifyUser, async (req, res, next) => {
     res.status(500).json({
       status: "error",
       message: "Failed to submit review!",
+    })
+  } catch (error) {
+    next(error)
+  }
+})
+
+// delete review
+router.delete("/:reviewId", verifyUser, async (req, res, next) => {
+  const { reviewId } = req.params
+  try {
+    const deletedReview = await deleteReview(reviewId)
+
+    if (deletedReview._id) {
+      return res.json({
+        status: "success",
+        message: "Review deleted successfully!",
+      })
+    }
+    res.json({
+      status: "error",
+      messaage: "Unable to delete review. Please try again later!",
     })
   } catch (error) {
     next(error)
