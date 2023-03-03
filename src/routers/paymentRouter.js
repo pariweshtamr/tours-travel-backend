@@ -45,6 +45,9 @@ router.post("/create-checkout-session", async (req, res, next) => {
       mode: "payment",
       success_url: `${process.env.CLIENT_URL}/thank-you`,
       cancel_url: `${process.env.CLIENT_URL}/tours/${tourId}`,
+      // consent_collection: {
+      //   terms_of_service: "required",
+      // },
     })
     res.json({ url: session.url })
   } catch (error) {
@@ -75,11 +78,11 @@ const createOrder = async (customer, data) => {
   }
 }
 
-let endpointSecret = process.env.STRIPE_WEBHOOK_SECRET
 router.post(
   "/webhook",
   express.raw({ type: "application/json" }),
   async (req, res) => {
+    let endpointSecret = process.env.STRIPE_WEBHOOK_SECRET
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 
     const sig = req.headers["stripe-signature"]

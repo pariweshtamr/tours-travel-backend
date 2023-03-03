@@ -50,7 +50,6 @@ router.get("/:_id", async (req, res, next) => {
 
 // get tours by search
 router.get("/search/getToursBySearch", async (req, res, next) => {
-  console.log(req.query)
   const city = new RegExp(req.query.city, "i")
   const distance = parseInt(req.query.distance)
   const maxGroupSize = parseInt(req.query.maxGroupSize)

@@ -3,7 +3,7 @@ import Joi from "joi"
 export const FNAME = Joi.string().required().max(20)
 export const LNAME = Joi.string().required().max(20)
 export const EMAIL = Joi.string().email({ minDomainSegments: 2 }).required()
-export const PASSWORD = Joi.string().alphanum().required().min(7)
+export const PASSWORD = Joi.string().required().min(7)
 export const ROLE = Joi.string().required()
 export const DATE = Joi.date()
 export const PHOTO = Joi.string().alphanum()
