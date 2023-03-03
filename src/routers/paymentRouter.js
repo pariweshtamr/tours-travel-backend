@@ -17,14 +17,20 @@ router.post("/create-checkout-session", async (req, res, next) => {
     serviceFee,
   } = req.body
 
-  const price = tourPrice + serviceFee
-  const totalPrice = tourPrice * guestSize + serviceFee
+  const totalPrice = tourPrice * guestSize
+  const priceIncServiceCharge = totalPrice + 10
 
   const customer = await stripe.customers.create({
     metadata: {
       userId,
       phone,
-      tour: JSON.stringify({ tourName, totalPrice, tourId, guestSize, bookAt }),
+      tour: JSON.stringify({
+        tourName,
+        priceIncServiceCharge,
+        tourId,
+        guestSize,
+        bookAt,
+      }),
     },
   })
   try {
@@ -36,7 +42,7 @@ router.post("/create-checkout-session", async (req, res, next) => {
             product_data: {
               name: tourName,
             },
-            unit_amount: price * 100,
+            unit_amount: tourPrice * 100,
           },
           quantity: guestSize,
         },
