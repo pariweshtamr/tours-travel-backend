@@ -94,8 +94,6 @@ router.post(
 
     let data = event.data.object
 
-    console.log(data)
-
     // // Handle the checkout.session.completed event
     if (event.type === "checkout.session.completed") {
       try {
