@@ -6,16 +6,8 @@ const router = express.Router()
 
 router.post("/create-checkout-session", async (req, res, next) => {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
-  const {
-    tourPrice,
-    tourId,
-    guestSize,
-    tourName,
-    userId,
-    phone,
-    bookAt,
-    serviceFee,
-  } = req.body
+  const { tourPrice, tourId, guestSize, tourName, userId, phone, bookAt } =
+    req.body
 
   const totalPrice = tourPrice * guestSize
 
@@ -101,6 +93,8 @@ router.post(
     }
 
     let data = event.data.object
+
+    console.log(data)
 
     // // Handle the checkout.session.completed event
     if (event.type === "checkout.session.completed") {
