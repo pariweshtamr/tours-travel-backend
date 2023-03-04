@@ -11,3 +11,11 @@ export const getBookingById = (_id) => {
 export const getAllBookings = () => {
   return Booking.find()
 }
+
+export const getBookingsByFilter = (filter) => {
+  return Booking.find(filter)
+}
+
+export const getBookingAndUpdate = (id, obj) => {
+  return Booking.findByIdAndUpdate(id, obj, { new: true })
+}

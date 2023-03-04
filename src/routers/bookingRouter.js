@@ -4,6 +4,7 @@ import {
   createBooking,
   getAllBookings,
   getBookingById,
+  getBookingsByFilter,
 } from "../models/Booking/BookingModel.js"
 import Stripe from "stripe"
 
@@ -29,6 +30,27 @@ router.get("/:_id", verifyUser, async (req, res, next) => {
     booking?._id
       ? res.status(200).json({ status: "success", booking })
       : res.status(500).json({ status: "error", message: "Booking not found" })
+  } catch (error) {
+    next(error)
+  }
+})
+
+// get bookings by user
+router.get("/userBookings/tour", verifyUser, async (req, res, next) => {
+  const { _id } = req.user
+
+  try {
+    const bookings = await getBookingsByFilter({ userId: _id })
+
+    bookings.length
+      ? res.status(200).json({
+          status: "success",
+          message: `${bookings.length} bookings found!`,
+          bookings,
+        })
+      : res
+          .status(200)
+          .json({ status: "success", message: "No bookings found!" })
   } catch (error) {
     next(error)
   }
