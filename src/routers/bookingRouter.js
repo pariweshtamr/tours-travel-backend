@@ -6,7 +6,6 @@ import {
   getBookingById,
   getBookingsByFilter,
 } from "../models/Booking/BookingModel.js"
-import Stripe from "stripe"
 
 const router = express.Router()
 

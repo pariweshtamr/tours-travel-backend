@@ -96,7 +96,7 @@ router.post("/register", newUserValidation, async (req, res, next) => {
   }
 })
 
-// logion user
+// login user
 router.post("/login", async (req, res, next) => {
   const { email, password } = req.body
   try {
