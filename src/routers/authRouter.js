@@ -89,7 +89,7 @@ router.post("/register", newUserValidation, async (req, res, next) => {
     }
     return res.json({
       status: "error",
-      message: "Unable to crteate user. Please try again later!",
+      message: "Unable to create user. Please try again later!",
     })
   } catch (error) {
     next(error)

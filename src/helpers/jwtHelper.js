@@ -8,6 +8,7 @@ export const signAccessJwt = async (payload) => {
 
   return accessJwt
 }
+
 export const signRefreshJwt = async (payload) => {
   const refreshJwt = jwt.sign(payload, process.env.JWT_REFRESH_KEY, {
     expiresIn: "15d",
