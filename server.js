@@ -34,6 +34,10 @@ app.use("/api/v1/review", reviewRouter)
 app.use("/api/v1/booking", bookingRouter)
 app.use("/api/v1/payment", paymentRouter)
 
+app.use("/", (req, res) => {
+  res.json({ message: "You have reached travel booking app server!" })
+})
+
 // Global error handler
 app.use((error, req, res, next) => {
   const errorStatus = error.status || 500
